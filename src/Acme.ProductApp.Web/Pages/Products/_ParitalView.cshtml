@@ -1,0 +1,20 @@
+﻿@using Acme.ProductApp.Localization
+@using Acme.ProductApp.Web.Pages.Products
+@using Microsoft.Extensions.Localization
+@model IndexModel
+@inject IStringLocalizer<ProductAppResource> L
+<abp-card>
+    <abp-card-header>
+        <abp-row>
+            <abp-column size-md="_6">
+                <abp-card-title>@L["Products"]</abp-card-title>
+            </abp-column>
+            <abp-column size-md="_6" class="text-right">
+                <a class="btn btn-primary" asp-page="CreateModal"><i class="fas fa-plus"></i> @L["NewProduct"].Value</a>
+            </abp-column>
+        </abp-row>
+    </abp-card-header>
+    <abp-card-body>
+        <abp-table striped-rows="true" id="ProductsTable"></abp-table>
+    </abp-card-body>
+</abp-card>

@@ -1,0 +1,48 @@
+﻿@page
+@using Acme.ProductApp.Localization
+@using Acme.ProductApp.Web.Pages.Products
+@using Microsoft.Extensions.Localization
+@using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Modal
+@model CreateModalModel
+@inject IStringLocalizer<ProductAppResource> L
+@section styles {
+    <abp-style src="/Pages/Products/Index.css" />
+}
+<abp-card>
+    <abp-card-header>
+        <abp-row>
+            <abp-column size-md="_6">
+                <abp-card-title>@L["NewProduct"]</abp-card-title>
+            </abp-column>
+
+        </abp-row>
+    </abp-card-header>
+    <abp-card-body>
+        <form method="post" asp-page="CreateModal" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <abp-input asp-for="@Model.Product.Title" />
+            <abp-input asp-for="@Model.Product.Description" />
+            <abp-input asp-for="@Model.Product.Price" />
+            <abp-select asp-for="@Model.Product.CategoryId" />
+            <div class="image-upload">
+                <label for="file-input">
+                    <img width="200" height="200" id="Picture" alt="product" src="~/Files/Photos/download.png" />
+                </label>
+
+                <input type="file" asp-for="@Model.Product.PictureUrl"
+                           accept="image/*"
+                           id="file-input"
+                           class="input"
+                           onchange="document.getElementById('Picture').src = window.URL.createObjectURL(this.files[0])  " />
+
+            </div>
+            <span asp-validation-for="@Model.Product.PictureUrl"></span>
+            <div class="form-group">
+                <input type="submit" value="@L["Create"]" class="btn btn-primary" />
+                <a class="btn btn-danger" asp-page="Index">@L["Back"].Value</a>
+
+            </div>
+        </form>
+    </abp-card-body>
+
+</abp-card>

@@ -1,0 +1,134 @@
+﻿@page
+@using Acme.ProductApp.Localization
+@using Acme.ProductApp.Web.Pages.Products
+@using Microsoft.Extensions.Localization
+@using Acme.ProductApp.Permissions
+@using Microsoft.AspNetCore.Authorization
+@model IndexModel
+@inject IStringLocalizer<ProductAppResource> L
+@inject IAuthorizationService AuthorizationService
+@section scripts
+{
+    <abp-script src="/Pages/Products/Index.js" />
+}
+<script>
+    /* funtion to call delete funtion and call index page*/
+    function deletepro(id) {
+        acme.productApp.products.product
+            .delete(id)
+            .then(function () {
+                window.location = "/Products";
+            });
+
+
+    };
+</script>
+<abp-card>
+    <abp-card-header>
+        <abp-row>
+            <abp-column size-md="_6">
+                <abp-card-title>@L["Filter"]</abp-card-title>
+            </abp-column>
+        </abp-row>
+    </abp-card-header>
+    <abp-card-body>
+        @*<form method="post" class="input-form">
+            <select class="form-control" asp-for="Products.CategoryId" asp-items="Model.Categories" id="FillterData">
+                    <option value="">ALl Categories</option>
+                </select>
+            <abp-select asp-for="@Model.Products.CategoryId" asp-items="Model.Categories">
+                <option value="00000000-0000-0000-0000-000000000000">ALl Categories</option>
+            </abp-select>
+            <input type="submit" value=" @L["Filter"]" class="btn btn-primary" />
+
+            </form>*@
+        <abp-select asp-for="@Model.filterProducts.CategoryId" id="FillterData">
+            <option value="00000000-0000-0000-0000-000000000000">ALl Categories</option>
+        </abp-select>
+        <a id="FillterButton" class="btn btn-primary"><i class="fas fa-search"></i> @L["Filter"].Value</a>
+
+    </abp-card-body>
+
+</abp-card>
+<abp-card>
+    <abp-card-header>
+        <abp-row>
+            <abp-column size-md="_6">
+                <abp-card-title>@L["Products"]</abp-card-title>
+            </abp-column>
+            <abp-column size-md="_6" class="text-right">
+                @if (await AuthorizationService.IsGrantedAsync(ProductAppPermissions.Products.Create))
+                {
+                    <a class="btn btn-primary" asp-page="CreateModal"><i class="fas fa-plus"></i> @L["NewProduct"].Value</a>
+                }
+            </abp-column>
+        </abp-row>
+    </abp-card-header>
+    <abp-card-body>
+        <table class="table">
+            <thead>
+                <tr>
+
+                    <th>
+                        @L["Title"].Value
+                    </th>
+                    <th>
+                        @L["Description"].Value
+                    </th>
+                    <th>
+                        @L["Category"].Value
+                    </th>
+                    <th>
+                        @L["Price"].Value
+                    </th>
+                    <th>
+                        @L["Picture"].Value
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.filterProducts.productDtos)
+                {
+                    <tr>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Title)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Description)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CategoryTitle)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Price)
+                        </td>
+                        <td>
+                            @if (@item.Picture == null)
+                            {
+                                <img src="~/Files/Photos/download.png" width="30" height="30" />
+
+                            }
+                            else
+                            {
+                                <img src="~/Files/Photos/@item.Picture" width="30" height="30" />
+
+                            }
+                        </td>
+                        <td>
+                            @if (await AuthorizationService.IsGrantedAsync(ProductAppPermissions.Products.Edit))
+                            {
+                                <a class="btn btn-primary" asp-page="EditModal" asp-route-id="@item.Id"><i class="fas fa-edit"></i> @L["Edit"].Value</a>
+                            }
+                            @if (await AuthorizationService.IsGrantedAsync(ProductAppPermissions.Products.Delete))
+                            {
+                                <button class="btn btn-danger" onclick="deletepro('@item.Id')"><i class="far fa-trash-alt"></i>@L["Delete"].Value</button>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </abp-card-body>
+</abp-card>
